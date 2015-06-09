@@ -11,6 +11,7 @@ from django.db.models.sql.where import AND, OR
 from django.db.utils import DatabaseError, IntegrityError
 from django.utils.tree import Node
 from django.db import connections
+from djangotoolbox.fields import EmbeddedModelField
 
 try:
     from django.db.models.sql.where import SubqueryConstraint
@@ -639,7 +640,7 @@ class NonrelUpdateCompiler(NonrelCompiler):
     def execute_sql(self, result_type):
         values = []
         for field, _, value in self.query.values:
-            if hasattr(value, 'prepare_database_save'):
+            if hasattr(value, 'prepare_database_save') and not isinstance(field, EmbeddedModelField):
                 value = value.prepare_database_save(field)
             else:
                 value = field.get_db_prep_save(value,
