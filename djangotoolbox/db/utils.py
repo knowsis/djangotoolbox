@@ -1,4 +1,4 @@
-from django.db.backends.util import format_number
+from django.db.backends.utils import format_number
 
 
 def decimal_to_string(value, max_digits=16, decimal_places=0):
