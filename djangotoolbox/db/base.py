@@ -4,6 +4,7 @@ import datetime
 from django.conf import settings
 
 import django
+from djangotoolbox.db.schema import MongoDatabaseSchemaEditor
 
 if django.VERSION < (1, 8):
     from django.db.backends import (
@@ -716,6 +717,7 @@ class Database(object):
 class NonrelDatabaseWrapper(BaseDatabaseWrapper):
 
     Database = Database
+    SchemaEditorClass = MongoDatabaseSchemaEditor
 
     # These fake operators are required for SQLQuery.as_sql() support.
     operators = {
@@ -749,3 +751,9 @@ class NonrelDatabaseWrapper(BaseDatabaseWrapper):
 
     def _cursor(self):
         return FakeCursor()
+
+    def schema_editor(self, *args, **kwargs):
+        """
+        Returns a new instance of this backends' SchemaEditor (Django>=1.7)
+        """
+        return MongoDatabaseSchemaEditor(self, *args, **kwargs)
